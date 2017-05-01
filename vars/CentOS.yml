@@ -1,0 +1,7 @@
+---
+# vars file for dhcpd (CentOS specific)
+
+dhcpd__packages_names:
+  - dhcp
+
+dhcpd__service_name: dhcpd

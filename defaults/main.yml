@@ -1,0 +1,39 @@
+---
+# Cron role configuration
+
+# List of packages to install for adding cron feature to the host
+dhcpd__packages_names: []
+
+# Choose the mode that dhcpd will be set
+# available : ldap, files
+dhcpd__mode: undefined
+
+# The name of the dhcp service
+dhcpd__service_name: isc-dhcp-server
+
+##############
+## LDAP mode
+##############
+
+# The address of the LDAP server
+dhcpd__ldap_server: server.example.com
+# The port on which to contact LDAP server
+dhcpd__ldap_port: 389
+# Set ssl mode 'start_tls' or 'ldaps'
+#dhcpd__ldap_ssl: start_tls
+#dhcpd__ldap_tls_crlcheck:
+
+# LDAP Bind auth
+#dhcpd__ldap_username:
+#dhcpd__ldap_password:
+
+# The base DN to use to search LDAP objects
+dhcpd__ldap_basedn: dc=example,dc=com
+# Set here manually the server hostname to find the server's entry in LDAP
+#dhcpd__ldap_servercn: "server";
+
+# The method to use to retrieve DHCPD configuration from LDAP
+# Choice in : static, dynamic
+dhcpd__ldap_method: static
+# The path to the debug file
+#dhcpd__ldap_debug_file:

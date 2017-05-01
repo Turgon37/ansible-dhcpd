@@ -1,0 +1,29 @@
+---
+- name: Include the OS specific variables
+  include_vars: "{{ item }}"
+  with_first_found:
+    - files:
+        - "{{ ansible_distribution }}.yml"
+        - "{{ ansible_os_family }}.yml"
+      skip: true
+  tags: ['dhcpd']
+
+- name: Install the latest version of dhcpd packages
+  package:
+    name: '{{ item }}'
+    state: latest
+  with_items:
+    - "{{ dhcpd__packages_names }}"
+  tags: ['dhcpd']
+
+- name: Include the dhcpd mode's tasks
+  include: "mode-{{ dhcpd__mode }}.yml"
+  tags: ['dhcpd']
+
+- name: Ensure dhcpd is started and enabled on boot
+  service:
+    name: "{{ dhcpd__service_name }}"
+    state: started
+    enabled: yes
+  changed_when: False
+  tags: ['dhcpd']
