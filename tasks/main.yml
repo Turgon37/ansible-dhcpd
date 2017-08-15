@@ -16,6 +16,23 @@
     - "{{ dhcpd__packages_names }}"
   tags: ['dhcpd']
 
+- name: Check for DHCPD mode
+  fail:
+    msg: "The dhcp mode is not configured"
+  when: dhcpd__mode is not defined
+  tags: ['dhcpd']
+
+- name: Install dhcpd default configuration file
+  template:
+    src: default-dhcpd.j2
+    dest: "/etc/default/isc-dhcp-server"
+    owner: root
+    group: root
+    mode: 0644
+  when: ansible_distribution == 'Debian'
+  notify: [ 'restart-dhcpd' ]
+  tags: ['dhcpd']
+
 - name: Include the dhcpd mode's tasks
   include: "mode-{{ dhcpd__mode }}.yml"
   tags: ['dhcpd']

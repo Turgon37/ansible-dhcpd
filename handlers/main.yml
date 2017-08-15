@@ -1,5 +1,5 @@
 ---
-- name: Restart dhcpd
+- name: restart-dhcpd
   service:
-    name: "{{ dhcpd__service_name }}"
-    state: 'restarted'
+    name: '{{ dhcpd__service_name }}'
+    state: restarted

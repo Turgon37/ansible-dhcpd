@@ -1,0 +1,69 @@
+#
+# {{ ansible_managed }}
+#
+
+#
+# DHCP Server Configuration file.
+#
+
+# The ddns-updates-style parameter controls whether or not the server will
+# attempt to do a DNS update when a lease is confirmed. We default to the
+# behavior of the version 2 packages ('none', since DHCP v2 didn't
+# have support for DDNS.)
+ddns-update-style none;
+
+# option definitions common to all supported networks...
+{% for key, value in dhcpd__dhcp_options | dictsort %}
+option {{ key }} {{ value }};
+{% endfor %}
+
+default-lease-time 600;
+max-lease-time 7200;
+
+{% if dhcpd__authoritative | d(False) | bool %}
+# This DHCP server is the official DHCP server for the local network
+authoritative;
+{% endif %}
+
+# Use this to send dhcp log messages to a different log file (you also
+# have to hack syslog.conf to complete the redirection).
+log-facility local7;
+
+
+# Subnets
+#
+{% for subnet in dhcpd__dhcp_subnets %}
+subnet {{ subnet.address }} netmask {{ subnet.netmask }} {
+{%   if subnet.range is defined %}
+  range {{ subnet.range }};
+{%   endif %}
+{%   for key, value in subnet.dhcp_options | d({}) | dictsort %}
+  option {{ key }} {{ value }};
+{%   endfor %}
+{%   for key, value in subnet.options | d({}) | dictsort %}
+  {{ key }} {{ value }};
+{%   endfor %}
+}
+
+{% endfor %}
+
+
+# Hosts
+#
+{% for name, host in dhcpd__dhcp_hosts | dictsort %}
+host {{ name }} {
+{%   if host.hardware_ethernet is defined %}
+  hardware ethernet {{ host.hardware_ethernet }};
+{%   endif %}
+{%   if host.fixed_address is defined %}
+  fixed-address {{ host.fixed_address }};
+{%   endif %}
+
+{%   if host.filename is defined %}
+  filename "{{ host.filename }}";
+{%   endif %}
+{%   if host.server_name is defined %}
+  server-name "{{ host.server_name }}";
+{%   endif %}
+}
+{% endfor %}

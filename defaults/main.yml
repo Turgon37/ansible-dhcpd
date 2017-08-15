@@ -1,15 +1,38 @@
 ---
-# Cron role configuration
+# DHCP daemon role configuration
+
+# Simple placeholder to allow other roles to detect this role
+dhcpd__role: True
 
 # List of packages to install for adding cron feature to the host
 dhcpd__packages_names: []
 
 # Choose the mode that dhcpd will be set
 # available : ldap, files
-dhcpd__mode: undefined
+#dhcpd__mode: 
 
 # The name of the dhcp service
 dhcpd__service_name: isc-dhcp-server
+
+# The configuration file of dhcp server
+dhcpd__config_file: /etc/dhcp/dhcpd.conf
+
+# The list of interface to listen on
+dhcpd__interfaces: []
+
+##############
+# FILES mode #
+##############
+
+# Global DHCP option that applies on all subnet
+dhcpd__dhcp_options: {}
+
+# Make this serveur authoritative
+dhcpd__authoritative: True
+
+dhcpd__dhcp_subnets: []
+
+dhcpd__dhcp_hosts: []
 
 ##############
 ## LDAP mode
