@@ -1,16 +1,15 @@
 ---
-- name: Assert required LDAP variables
+# TODO
+- name: Assert required FILES variables
   assert:
     that:
       - True
-  tags: ['dhcpd']
 
 - name: Configure DHCP server
   template:
     src: 'dhcpd.conf.files.j2'
     dest: '{{ dhcpd__config_file }}'
-    owner: 'root'
-    group: 'root'
-    mode: '0644'
+    owner: root
+    group: root
+    mode: 0644
   notify: [ 'restart-dhcpd' ]
-  tags: ['dhcpd']

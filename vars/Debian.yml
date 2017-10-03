@@ -1,5 +1,5 @@
 ---
-# vars file for dhcpd (CentOS specific)
+# vars file for dhcpd (Debian specific)
 
 dhcpd__packages_names:
   - isc-dhcp-server

@@ -1,5 +1,5 @@
 ---
-# DHCP daemon role configuration
+# defaults file for dhcpd
 
 # Simple placeholder to allow other roles to detect this role
 dhcpd__role: True
@@ -12,13 +12,14 @@ dhcpd__packages_names: []
 #dhcpd__mode: 
 
 # The name of the dhcp service
-dhcpd__service_name: isc-dhcp-server
+dhcpd__service_name: dhcpd
 
 # The configuration file of dhcp server
 dhcpd__config_file: /etc/dhcp/dhcpd.conf
 
 # The list of interface to listen on
 dhcpd__interfaces: []
+
 
 ##############
 # FILES mode #
@@ -33,6 +34,8 @@ dhcpd__authoritative: True
 dhcpd__dhcp_subnets: []
 
 dhcpd__dhcp_hosts: []
+
+
 
 ##############
 ## LDAP mode

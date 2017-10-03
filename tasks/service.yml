@@ -1,0 +1,7 @@
+---
+
+- name: Ensure dhcpd is started and enabled on boot
+  service:
+    name: '{{ dhcpd__service_name }}'
+    enabled: yes
+    state: started

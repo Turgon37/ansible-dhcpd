@@ -1,4 +1,5 @@
 ---
+
 - name: Assert required LDAP variables
   assert:
     that:
@@ -6,14 +7,12 @@
       - dhcpd__ldap_basedn is defined
       - dhcpd__ldap_method in ['static', 'dynamic']
       - dhcpd__ldap_ssl is not defined or dhcpd__ldap_ssl in ['start_tls', 'ldaps']
-  tags: ['dhcpd']
 
 - name: Configure DHCP server
   template:
     src: 'dhcpd.conf.ldap.j2'
     dest: '{{ dhcpd__config_file }}'
-    owner: 'root'
-    group: 'root'
-    mode: '0644'
+    owner: root
+    group: root
+    mode: 0644
   notify: [ 'restart-dhcpd' ]
-  tags: ['dhcpd']

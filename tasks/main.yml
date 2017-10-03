@@ -1,46 +1,25 @@
 ---
+# tasks file for dhcpd
+
 - name: Include the OS specific variables
   include_vars: "{{ item }}"
   with_first_found:
     - files:
+        - "{{ ansible_distribution }}-{{ ansible_distribution_version }}.yml"
         - "{{ ansible_distribution }}.yml"
         - "{{ ansible_os_family }}.yml"
+        - "defaults.yml"
       skip: true
-  tags: ['dhcpd']
+  tags: ['always']
 
-- name: Install the latest version of dhcpd packages
-  package:
-    name: '{{ item }}'
-    state: latest
-  with_items:
-    - "{{ dhcpd__packages_names }}"
-  tags: ['dhcpd']
+- import_tasks: init.yml
+  tags: ['always']
 
-- name: Check for DHCPD mode
-  fail:
-    msg: "The dhcp mode is not configured"
-  when: dhcpd__mode is not defined
-  tags: ['dhcpd']
+- import_tasks: install.yml
+  tags: ['dhcpd', 'dhcpd-install']
 
-- name: Install dhcpd default configuration file
-  template:
-    src: default-dhcpd.j2
-    dest: "/etc/default/isc-dhcp-server"
-    owner: root
-    group: root
-    mode: 0644
-  when: ansible_distribution == 'Debian'
-  notify: [ 'restart-dhcpd' ]
-  tags: ['dhcpd']
+- import_tasks: configure.yml
+  tags: ['dhcpd', 'dhcpd-configure']
 
-- name: Include the dhcpd mode's tasks
-  include: "mode-{{ dhcpd__mode }}.yml"
-  tags: ['dhcpd']
-
-- name: Ensure dhcpd is started and enabled on boot
-  service:
-    name: "{{ dhcpd__service_name }}"
-    state: started
-    enabled: yes
-  changed_when: False
-  tags: ['dhcpd']
+- import_tasks: service.yml
+  tags: ['dhcpd', 'dhcpd-service']
