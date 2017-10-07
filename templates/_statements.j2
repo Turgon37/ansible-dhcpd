@@ -1,0 +1,122 @@
+{#
+ # Produce a parameter statement
+ #
+ # @param value parameter : the value of the dhcp option
+ # @return string
+ #}
+{%- macro parameter(value) -%}
+{{ value }};
+{%- endmacro -%}
+
+{#
+ # Produce a DHCP option statement
+ #
+ # @param name parameter : the name of the dhcp option
+ # @param value parameter : the value of the dhcp option
+ # @return string
+ #}
+{%- macro dhcp_option(name, value) -%}
+{% if name in dhcpd__quoted_dhcp_options_name %}{% set value = '"'~value~'"' %}{% endif %}
+option {{ name }} {{ value }};
+{%- endmacro -%}
+
+{#
+ # Shortcut for header declarations
+ #
+ # @param obj parameter : your configuration object (subnet, pool, group..)
+ # @return string
+ #}
+{%- macro header(obj) -%}
+{%   for value in obj.parameters|d([]) %}
+{{   parameter(value)|indent(2, true) }}
+{%   endfor %}
+{%   for key, value in obj.dhcp_options|d({})|dictsort %}
+{{   dhcp_option(key, value)|indent(2, true) }}
+{%   endfor %}
+{%- endmacro -%}
+
+{#
+ # Shortcut for header declarations
+ #
+ # @param obj parameter : your configuration object (subnet, pool, group..)
+ # @return string
+ #}
+{%- macro footer(obj) -%}
+{% for p in obj.pools|d([]) %}
+{{   pool(p)|indent(2, true) }}
+{% endfor %}
+{% for g in obj.groups|d([]) %}
+{{   group(g)|indent(2, true) }}
+{% endfor %}
+{% for h in obj.hosts|d([]) %}
+{{   host(h)|indent(2, true) }}
+{% endfor %}
+{%- endmacro -%}
+
+
+{#
+ # Produce a host statement
+ #
+ # @param h parameter : dict of host values
+ # @return string
+ #}
+{%- macro host(h) -%}
+host {{ h.name }} {
+{%   if h.mac_address is defined %}
+  hardware ethernet {{ h.mac_address }};
+{%   endif %}
+{%   if h.ipv4_address is defined %}
+  fixed-address {{ h.ipv4_address }};
+{%   endif %}
+{%   if h.deny is defined and h.deny|bool %}
+  deny booting;
+{%   endif %}
+}
+{%- endmacro -%}
+
+
+{#
+ # Produce a subnet statement
+ #
+ # @param s parameter : dict of subnet values
+ # @return string
+ #}
+{%- macro subnet(s) -%}
+subnet {{ s.network }} netmask {{ s.netmask }} {
+{%   if s.range is defined %}
+  range {{ s.range }};
+{%   endif %}
+{{ header(s) }}
+{{ footer(s) }}
+}
+{%- endmacro -%}
+
+
+{#
+ # Produce a pool statement
+ #
+ # @param p parameter : dict of host values
+ # @return string
+ #}
+{%- macro pool(p) -%}
+pool {
+{%   if p.range is defined %}
+  range {{ p.range }};
+{%   endif %}
+{{ header(p) }}
+{{ footer(p) }}
+}
+{%- endmacro -%}
+
+{#
+ # Produce a group statement
+ #
+ # @param g parameter : dict of host values
+ # @return string
+ #}
+{%- macro group(g) -%}
+group {
+{{ header(g) }}
+{{ footer(g) }}
+}
+{%- endmacro -%}

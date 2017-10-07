@@ -12,4 +12,5 @@
     owner: root
     group: root
     mode: 0644
+    validate: "{{ dhcpd__executable }} -t -cf %s"
   notify: [ 'restart-dhcpd' ]

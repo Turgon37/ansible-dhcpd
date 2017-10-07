@@ -25,16 +25,20 @@ dhcpd__interfaces: []
 # FILES mode #
 ##############
 
-# Global DHCP option that applies on all subnet
-dhcpd__dhcp_options: {}
-
 # Make this serveur authoritative
 dhcpd__authoritative: True
 
-dhcpd__dhcp_subnets: []
+# Global parameters
+dhcpd__parameters: []
 
-dhcpd__dhcp_hosts: []
+# Global DHCP option that applies on all subnet
+dhcpd__dhcp_options: {}
 
+# List of subnets definitions
+dhcpd__subnets: []
+
+# List of globally defined hosts
+dhcpd__hosts: []
 
 
 ##############
@@ -63,3 +67,16 @@ dhcpd__ldap_basedn: dc=example,dc=com
 dhcpd__ldap_method: static
 # The path to the debug file
 #dhcpd__ldap_debug_file:
+
+
+######################
+## INTERNAL SETTINS ##
+######################
+
+# Theses DHCP options values will be quoted with " in configuration file
+dhcpd__quoted_dhcp_options_name:
+  - domain-name
+  - domain-search
+
+# service executable used to test config
+dhcpd__executable: dhcpd
