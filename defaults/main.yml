@@ -4,6 +4,9 @@
 # Simple placeholder to allow other roles to detect this role
 dhcpd__role: True
 
+# Enable facts deploiement
+dhcpd__facts: True
+
 # List of packages to install for adding cron feature to the host
 dhcpd__packages_names: []
 
