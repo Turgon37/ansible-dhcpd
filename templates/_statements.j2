@@ -28,10 +28,10 @@ option {{ name }} {{ value }};
  #}
 {%- macro header(obj) -%}
 {%   for value in obj.parameters|d([]) %}
-{{   parameter(value)|indent(2, true) }}
+{{     parameter(value)|indent(2, true) }}
 {%   endfor %}
 {%   for key, value in obj.dhcp_options|d({})|dictsort %}
-{{   dhcp_option(key, value)|indent(2, true) }}
+{{     dhcp_option(key, value)|indent(2, true) }}
 {%   endfor %}
 {%- endmacro -%}
 

@@ -16,6 +16,7 @@ dhcpd__packages_names: []
 
 # The name of the dhcp service
 dhcpd__service_name: dhcpd
+dhcpd__service_enabled: True
 
 # The configuration file of dhcp server
 dhcpd__config_file: /etc/dhcp/dhcpd.conf
@@ -72,9 +73,9 @@ dhcpd__ldap_method: static
 #dhcpd__ldap_debug_file:
 
 
-######################
-## INTERNAL SETTINS ##
-######################
+#######################
+## INTERNAL SETTINGS ##
+#######################
 
 # Theses DHCP options values will be quoted with " in configuration file
 dhcpd__quoted_dhcp_options_name:

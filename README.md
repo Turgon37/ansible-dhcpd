@@ -1,88 +1,232 @@
 Ansible Role DHCP Daemon
-========
+=========
 
-:warning: This role is under development
+:warning: This role is under development, some important (and possibly breaking) changes may happend. Don't use it in production level environments but you can eventually base your own role on this one :hammer:
 
-This roles configure an dhcp server
+:grey_exclamation: Before using this role, please know that all my Ansible role are fully written and accustomed to my IT infrastructure. So, even if they are as generic as possible they will not necessarily fill your needs, I advice you to carrefully analyse what they do and evaluate their capability to be installed securely on your servers.
 
-## OS Family
-
-This role is available for Debian and CentOS
+**This roles configure the isc-dhcp-server to use files or LDAP backend.**
 
 ## Features
 
-At this day the role can be used to configure :
+Currently this role provide the following features :
 
-  * Install dhcpd
-  * Configure dhcpd in mode FILE with subnets and hosts declarations
-  * Configure dhcpd in mode LDAP
+  * dhcpd installation
+  * configuration dhcpd in plain text FILEs with subnets, hosts, groups, pool and options declarations
+  * configuration dhcpd in mode LDAP
+  * [local facts](#facts)
 
-## Configuration
+## Requirements
+
+### OS Family
+
+This role is available for Debian and RedHat/CentOS
+
+### Dependencies
+
+--
+
+
+## Role Variables
 
 The variables that can be passed to this role and a brief description about them are as follows:
 
-| Name              | Description                                                                  |
-| ----------------- | ---------------------------------------------------------------------------- |
-| dhcpd__mode       | Choose dhcpd mode in 'files' or 'ldap'. (See below for mode specific options)|
-| dhcpd__interfaces | The name of the interfaces on which dhcpd will listen (default all)          |
-
+| Name                   | Types/Values   | Description                                                                                |
+| -----------------------| ---------------|------------------------------------------------------------------------------------------- |
+| dhcpd__facts           | Boolean        | Install the local fact script                                                              |
+| dhcpd__service_enabled | Boolean        | Enable or not the service                                                                  |
+| dhcpd__mode            | String         | Choose dhcpd configuration mode in 'files' or 'ldap'. (See below for mode specific options)|
+| dhcpd__interfaces      | List of String | List of interface on which dhcpd will listen for DHCP requests (default all)               |
 
 ### Mode FILES
 
-| Name                 | Description                                                                                                                                   |
-| -------------------- | --------------------------------------------------------------------------------------------------------------------------------------------- |
-| dhcpd__authoritative | Boolean that make this DHCP server authoritative (not a relay)                                                                                |
-| dhcpd__dhcp_options  | Global DHCP option that applies on all subnet. !! Take care that some option require double quote, see example below with 'domain-name' option|
-| dhcpd__dhcp_subnets  |                                                                                                                                               |
-| dhcpd__dhcp_hosts    |                                                                                                                                               |
+| Name                 | Types/Values              | Description                                                   |
+| ---------------------| --------------------------|-------------------------------------------------------------- |
+| dhcpd__authoritative | Boolean                   | Boolean that make this DHCP server authoritative (not a relay)|
+| dhcpd__parameters    | List of String            | Dhcp parameters in raw string format to apply on configuraton |
+| dhcpd__dhcp_options  | Dict of String            | Dhcp option in "key: value" format                            |
+| dhcpd__subnets       | List of Subnet statements | Declare subnets                                               |
+| dhcpd__hosts         | List of Host statements   | Hosts entries at the root of the configuration                |
+
+Noe for *dhcp_options*, some parameters need to be enclosed by quote in the configuration file, this role takes with a list of theses options (dhcpd__quoted_dhcp_options_name) and apply automatically the quotes. So, normally you do not have to put theses quotes in inventory files.
+
+#### Host statement
+
+A host statement must be in the following format
+
+```
+- name: host1
+  mac_address: ee:ee:ee:ee:ee:ee
+  ipv4_address: 192.168.1.1
+  deny: False
+```
+
+#### Subnet statement
+
+A subnet statement must be in the following format
+
+```
+- network: 10.0.0.0
+  netmask: 255.255.255.0
+  range: 10.0.0.1 10.0.0.10
+  parameters: # Raw parameters
+    ...
+  dhcp_options:  # dhcp options
+    routers: 10.51.57.254
+    ...
+  pools:  # pool statements
+    ...
+  groups: # groups statements
+    ...
+  hosts:  # host statements
+    ...
+```
+
+#### Pool statement
+
+A pool statement must be in the following format
+
+```
+- range: 10.0.0.1 10.0.0.10
+  parameters: # Raw parameters
+    ...
+  dhcp_options:  # dhcp options
+    ...
+  groups: # groups statements
+    ...
+  hosts:  # host statements
+    ...
+```
+
+#### Groups statement
+
+A group statement must be in the following format
+
+```
+- parameters: # Raw parameters
+    ...
+  dhcp_options:  # dhcp options
+    ...
+  groups: # groups statements
+    ...
+  hosts:  # host statements
+    ...
+```
 
 
 ### Mode LDAP
 
-| Name                   | Description                                                                                          |
-| ---------------------- | ---------------------------------------------------------------------------------------------------- |
-| dhcpd__ldap_server     | The ip address/domain name of the LDAP server                                                        |
-| dhcpd__ldap_port       | The port to use to bind with LDAP server                                                             |
-| dhcpd__ldap_username   | OPTIONAL bind username/dn                                                                            |
-| dhcpd__ldap_password   | OPTIONAL bind password                                                                               |
-| dhcpd__ldap_basedn     | LDAP base DN of the DHCP tree                                                                        |
-| dhcpd__ldap_servercn   | The commonname (cn= field) of the DhcpServer entry to use. (default is to use the fqdn of this host) |
-| dhcpd__ldap_method     | The LDAP query method, 'static' or 'dynamic'                                                         |
-| dhcpd__ldap_debug_file | OPTIONAL The debug file in which dhcpd will dump read LDAP configuration                             |
+| Name                   | Types/Values | Description                                                                                           |
+| ---------------------- | -------------|-------------------------------------------------------------------------------------------------------|
+| dhcpd__ldap_server     | String       | The ip address/domain name of the LDAP server                                                         |
+| dhcpd__ldap_port       | Integer      | The port to use to bind with LDAP server                                                              |
+| dhcpd__ldap_username   | String       | OPTIONAL bind username/dn                                                                             |
+| dhcpd__ldap_password   | String       | OPTIONAL bind password                                                                                |
+| dhcpd__ldap_basedn     | String       | LDAP base DN of the DHCP tree                                                                         |
+| dhcpd__ldap_servercn   | String       | The commonname (cn= field) of the DhcpServer entry to use. (default is to use the fqdn of this host)  |
+| dhcpd__ldap_method     | String       | The LDAP query method, 'static' or 'dynamic'                                                          |
+| dhcpd__ldap_debug_file | String       | OPTIONAL The debug file in which dhcpd will dump read LDAP configuration                              |
 
 
+## Facts
 
-### Example
+By default the local fact are installed and expose the following variables :
+
+
+* ```ansible_local.dhcpd.version_full```
+* ```ansible_local.dhcpd.version_major```
+
+
+## Examples Playbooks
+
+To use this role create or update your playbook according the following examples :
 
   * Exemple of configuration with classical FILES backend
 
 ```
-dhcpd__mode: files
-dhcpd__dhcp_options:
-  domain-name: '"domain.example.net"'
-  domain-name-servers: 192.168.1.254
-dhcpd__interfaces: 'wlan0'
-dhcpd__dhcp_subnets:
-  - address: 192.168.1.0
-    netmask: 255.255.255.0
-    range: 192.168.1.10 192.168.1.100
-    dhcp_options:
-      routers: 192.168.1.254
-      broadcast-address: 192.168.1.255
-dhcpd__dhcp_hosts:
-  host_name1:
-    hardware_ethernet: aa:aa:aa:aa:aa:aa
-    fixed_address: 192.168.1.101
-  host_name2:
-    hardware_ethernet: aa:aa:aa:aa:aa:aa
-    fixed_address: 192.168.1.102
+    - hosts: servers
+      roles:
+         - dhcpd
+      vars:
+        dhcpd__mode: files
+        dhcpd__interfaces: 'wlan0'
+        dhcpd__parameters:
+          - default-lease-time 864000
+          - deny bootp
+          - ddns-updates off
+          - ddns-update-style none
+          - log-facility local7
+        dhcpd__subnets:
+          - network: 10.0.0.0
+            netmask: 255.255.255.0
+            range: 10.0.0.1 10.0.0.10
+            dhcp_options:
+              routers: 10.0.0.254
+              broadcast-address: 10.0.0.255
+              domain-name: 'local'
+              domain-name-servers: 10.0.0.254
+            hosts:
+              - name: host1
+                mac_address: ee:ee:ee:ee:ee:e
+                ipv4_address: 10.0.0.1
+```
+
+  * A complexe example with pool and group
+
+
+  * Exemple of configuration with classical FILES backend
+
+```
+    - hosts: servers
+      roles:
+         - dhcpd
+      vars:
+        dhcpd__subnets:
+          - network: 192.168.1.0
+            netmask: 255.255.255.0
+            dhcp_options:
+              subnet-mask: 255.255.255.0
+              broadcast-address: 192.168.1.255
+              routers: 192.168.1.254
+            pools:
+              - range: 192.168.1.100 192.168.1.190
+                parameters:
+                  - allow unknown-clients
+                dhcp_options:
+                  domain-name: home
+                  domain-name-servers: 192.168.1.254
+                hosts:
+                  - name: tv_decoder
+                    mac_address: ee:ee:ee:ee:ee:ee
+                    deny: True
+              - range: 192.168.1.80 192.168.1.99
+                parameters:
+                  - deny unknown-clients
+                groups:
+                  - dhcp_options:
+                      domain-search: 'local'
+                      domain-name: 'local'
+                      domain-name-servers: 192.168.1.230
+                    hosts:
+                      - name: laptop1
+                        mac_address: ee:ee:ee:ee:ee:ee
 ```
 
   * Exemple of configuration with LDAP backend
 
 ```
-dhcpd__mode: ldap
-dhcpd__ldap_server: ldap.domain.net
-dhcpd__ldap_basedn: cn=dhcp,dc=example,dc=net
-dhcpd__ldap_debug_file: /tmp/dhcp-ldap-startup.log
+
+    - hosts: servers
+      roles:
+         - dhcpd
+      vars:
+        dhcpd__mode: ldap
+        dhcpd__ldap_server: ldap.domain.net
+        dhcpd__ldap_basedn: cn=dhcp,dc=example,dc=net
+        dhcpd__ldap_debug_file: /tmp/dhcp-ldap-startup.log
 ```
+
+
+## License
+
+MIT

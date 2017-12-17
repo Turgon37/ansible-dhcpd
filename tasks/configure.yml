@@ -2,11 +2,11 @@
 
 - name: Install default configuration file
   template:
-    src: default-dhcpd.j2
-    dest: "/etc/default/isc-dhcp-server"
+    src:   default-dhcpd.j2
+    dest:  '/etc/default/isc-dhcp-server'
     owner: root
     group: root
-    mode: 0644
+    mode:  0644
   when: ansible_distribution == 'Debian'
   notify: [ 'restart-dhcpd' ]
 

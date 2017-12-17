@@ -10,10 +10,10 @@
 
 - name: Configure DHCP server
   template:
-    src: 'dhcpd.conf.ldap.j2'
-    dest: '{{ dhcpd__config_file }}'
+    src:   'dhcpd.conf.ldap.j2'
+    dest:  '{{ dhcpd__config_file }}'
     owner: root
     group: root
-    mode: 0644
-    validate: "{{ dhcpd__executable }} -t -cf %s"
+    mode:  0644
+    validate: '{{ dhcpd__executable }} -t -cf %s'
   notify: [ 'restart-dhcpd' ]
