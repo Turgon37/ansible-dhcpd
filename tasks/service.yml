@@ -3,5 +3,5 @@
 - name: Ensure dhcpd is started and enabled on boot
   service:
     name:    '{{ dhcpd__service_name }}'
-    enabled: "{{ dhcpd__service_enabled|bool }}"
+    enabled: '{{ dhcpd__service_enabled|bool }}'
     state:   "{{ dhcpd__service_enabled|bool|ternary('started', 'stopped') }}"

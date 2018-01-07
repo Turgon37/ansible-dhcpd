@@ -20,6 +20,7 @@ script:
   - chmod +x ${PWD}/tests/test.sh
 
   # Prepare network
+  - ip addr
   - export iface=$(ip link | grep '^[0-9].*state UP' | awk '{ print $2 }' |tr -d ':' | head -n 1)
   - ip addr add 192.168.1.254/24 dev $iface
 
