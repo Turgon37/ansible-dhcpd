@@ -19,6 +19,10 @@ script:
   - wget -O ${PWD}/tests/test.sh https://gist.githubusercontent.com/Turgon37/5b6e6553ef92dc65d1c7df3e1a1e290e/raw/
   - chmod +x ${PWD}/tests/test.sh
 
+  # Prepare network
+  - export iface=$(ip link | grep '^[0-9].*state UP' | awk '{ print $2 }' |tr -d ':' | head -n 1)
+  - ip addr add 192.168.1.254/24 dev $iface
+
   # Run tests.
   - ${PWD}/tests/test.sh
   - export container_id=$(cat /tmp/container_id)
