@@ -1,0 +1,27 @@
+---
+
+dhcpd__parameters:
+  - adaptive-lease-time-threshold 75
+  - get-lease-hostnames off
+  - update-optimization on
+  - default-lease-time 43200
+  - max-lease-time 86400
+  - min-lease-time 600
+  - deny bootp
+  - ignore client-updates
+  - update-static-leases on
+  - ddns-updates off
+  - ddns-update-style none
+  - ping-check true
+  - ping-timeout 1
+  - log-facility local7
+
+
+dhcpd__mode: files
+dhcpd__subnets:
+  - network: 192.168.1.0
+    netmask: 255.255.255.0
+    dhcp_options:
+      subnet-mask: 255.255.255.0
+      broadcast-address: 192.168.1.255
+      routers: 192.168.1.254
