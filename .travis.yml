@@ -27,5 +27,5 @@ script:
   ## Specific roles tests
   #
   # Ensure dhcpd is installed.
-  - 'docker exec --tty ${container_id} env TERM=xterm which dhcpd'
-  - 'docker exec --tty ${container_id} env TERM=xterm dhcpd --version'
+  - docker exec --tty ${container_id} --env TERM=xterm which dhcpd
+  - docker exec --tty ${container_id} --env TERM=xterm dhcpd --version
