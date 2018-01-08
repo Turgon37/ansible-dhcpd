@@ -20,7 +20,7 @@ script:
   - chmod +x ${PWD}/tests/test.sh
 
   # Prepare network
-  - "test_begin_user() { ip addr add 192.168.76.254/24 dev eth0; }"
+  - "test_begin_user() { ip addr; }"
 
   # Run tests.
   - source ${PWD}/tests/test.sh
