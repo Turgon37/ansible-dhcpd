@@ -20,16 +20,12 @@ script:
   - chmod +x ${PWD}/tests/test.sh
 
   # Prepare network
-  - 'test_begin_user() { ip addr; }'
-  - export -f function test_begin_user
-#  - export iface=$(ip link | grep '^[0-9].*state UP' | awk '{ print $2 }' |tr -d ':' | head -n 1)
-#  - ip addr add 192.168.1.254/24 dev $iface
+  - "test_begin_user() { ip addr; ip addr add 192.168.1.254/24 dev $(ip link | grep '^[0-9].*state UP' | awk '{ print $2 }' |tr -d ':' | head -n 1) }"
 
   # Run tests.
   - source ${PWD}/tests/test.sh
   - export container_id=$(cat /tmp/container_id)
   - docker exec --tty --env TERM=xterm ${container_id} journalctl -xn
-  - docker exec --tty --env TERM=xterm ${container_id} ip addr
 
   #
   ## Specific roles tests
