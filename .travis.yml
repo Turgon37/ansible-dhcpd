@@ -20,7 +20,7 @@ script:
   - chmod +x ${PWD}/tests/test.sh
 
   # Prepare network
-  - "test_begin_user() { ip addr; ip addr add 192.168.1.254/24 dev $(ip link | grep '^[0-9].*state UP' | awk '{ print $2 }' |tr -d ':' | head -n 1) }"
+  - "test_begin_user() { ip addr add 192.168.76.254/24 dev eth0; }"
 
   # Run tests.
   - source ${PWD}/tests/test.sh
