@@ -12,7 +12,14 @@ Ansible Role DHCP Daemon
 Currently this role provide the following features :
 
   * dhcpd installation
-  * configuration dhcpd in plain text FILEs with subnets, hosts, groups, pool and options declarations
+  * configuration dhcpd in plain text FILEs with 
+    * subnets
+    * hosts
+    * groups
+    * pools
+    * options declarations
+    * OMAPI configuration
+    * secret keys (with automatic secret generation available)
   * configuration dhcpd in mode LDAP
   * [local facts](#facts)
 
@@ -40,15 +47,38 @@ The variables that can be passed to this role and a brief description about them
 
 ### Mode FILES
 
-| Name                 | Types/Values              | Description                                                   |
-| ---------------------| --------------------------|-------------------------------------------------------------- |
-| dhcpd__authoritative | Boolean                   | Boolean that make this DHCP server authoritative (not a relay)|
-| dhcpd__parameters    | List of String            | Dhcp parameters in raw string format to apply on configuraton |
-| dhcpd__dhcp_options  | Dict of String            | Dhcp option in "key: value" format                            |
-| dhcpd__subnets       | List of Subnet statements | Declare subnets                                               |
-| dhcpd__hosts         | List of Host statements   | Hosts entries at the root of the configuration                |
+| Name                       | Types/Values             | Description                                                   |
+| ---------------------------| -------------------------|-------------------------------------------------------------- |
+| dhcpd__authoritative       | Boolean                  | Boolean that make this DHCP server authoritative (not a relay)|
+| dhcpd__parameters          | List of String           | Dhcp parameters in raw string format to apply on configuraton |
+| dhcpd__dhcp_options        | Dict of String           | Dhcp option in "key: value" format                            |
+| dhcpd__subnets             | List of Subnet statements| Declare subnets                                               |
+| dhcpd__hosts               | List of Host statements  | Hosts entries at the root of the configuration                |
+| dhcpd__keys                | List of key statements   | List of secret keys to configure (see below )                 |
+| dhcpd__omapi_enabled       | Boolean                  | Enable (open) or not the OMAPI                                |
+| dhcpd__omapi_port          | Integer                  | Port of OMAPI interface                                       |
 
-Noe for *dhcp_options*, some parameters need to be enclosed by quote in the configuration file, this role takes with a list of theses options (dhcpd__quoted_dhcp_options_name) and apply automatically the quotes. So, normally you do not have to put theses quotes in inventory files.
+Note for *dhcp_options*, some parameters need to be enclosed by quote in the configuration file, this role takes with a list of theses options (dhcpd__quoted_dhcp_options_name) and apply automatically the quotes. So, normally you do not have to put theses quotes in inventory files.
+
+#### Key statements
+
+Ansible manage the list of secret keys declared for DHCPD. Each key item must be set in the dhcpd__keys dict, see below two examples:
+
+```
+dhcpd__keys:
+  key1:
+    algorithm: hmac-sha1
+    secret: XXXXXXXX==
+  ddns:
+    algorithm: hmac-md5
+    # secret will be autogenerate
+```
+
+If you do not provide the 'secret' key, it will be auto generated (only at first Ansible application) according the selected algorithm.
+Please take care that only algorithm declared in the internal role setting 'dhcpd__keys_size_mapping' will be accepted.
+
+:information_source: If you enable OMAPI with dhcpd__omapi_enabled, a key will be automatically produced for it.
+
 
 #### Host statement
 
