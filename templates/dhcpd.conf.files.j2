@@ -14,6 +14,15 @@ authoritative;
 not authoritative;
 {% endif %}
 
+{% if dhcpd__omapi_enabled|bool %}
+omapi-port {{ dhcpd__omapi_port|int }};
+omapi-key {{ dhcpd__omapi_key_name }};
+{% endif %}
+
+{% for name in dhcpd__keys.keys() %}
+include "{{ dhcpd__keys_dir }}/{{ name }}.key";
+{% endfor %}
+
 # Global service parameters
 {% for value in dhcpd__parameters %}
 {{   statements.parameter(value) }}

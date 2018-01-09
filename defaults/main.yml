@@ -18,8 +18,11 @@ dhcpd__packages_names: []
 dhcpd__service_name: dhcpd
 dhcpd__service_enabled: True
 
+# The main configuration directory of dhcpd
+dhcpd__config_dir: /etc/dhcp
+
 # The configuration file of dhcp server
-dhcpd__config_file: /etc/dhcp/dhcpd.conf
+dhcpd__config_file: '{{ dhcpd__config_dir }}/dhcpd.conf'
 
 # The list of interface to listen on
 dhcpd__interfaces: []
@@ -31,6 +34,20 @@ dhcpd__interfaces: []
 
 # Make this serveur authoritative
 dhcpd__authoritative: True
+
+# Enable or not the OMAPI interface
+dhcpd__omapi_enabled: False
+
+# Default port on which OMAPI will listen
+dhcpd__omapi_port: 7911
+dhcpd__omapi_key_name: internal_omapi_key
+dhcpd__omapi_key_algorithm: hmac-md5
+
+# The configuration file of dhcp server
+dhcpd__keys_dir: '{{ dhcpd__config_dir }}/keys'
+
+# List of secret keys defined
+dhcpd__keys: {}
 
 # Global parameters
 dhcpd__parameters: []
@@ -84,3 +101,12 @@ dhcpd__quoted_dhcp_options_name:
 
 # service executable used to test config
 dhcpd__executable: dhcpd
+
+# A mapping between secret keys algorithm and bytes size
+dhcpd__keys_size_mapping:
+  hmac-md5: 16
+  hmac-sha1: 20
+  hmac-sha224: 28
+  hmac-sha256: 32
+  hamc-sha384: 48
+  hmac-sha512: 64
