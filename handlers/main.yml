@@ -3,5 +3,6 @@
 
 - name: restart-dhcpd
   service:
-    name: '{{ dhcpd__service_name }}'
+    name:  '{{ dhcpd__service_name }}'
     state: restarted
+  when: dhcpd__service_enabled|bool
