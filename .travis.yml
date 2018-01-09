@@ -20,7 +20,7 @@ script:
   - chmod +x ${PWD}/tests/test.sh
 
   # Prepare network
-  - "test_begin_user() { ip addr; }"
+  - TEST_BEGIN_POST_COMMAND='ip addr'
 
   # Run tests.
   - source ${PWD}/tests/test.sh
