@@ -13,4 +13,5 @@ galaxy_info:
         - 7
   galaxy_tags: []
 
-dependencies: []
+dependencies:
+  - {role: yum-epel, when: "ansible_os_family in ['RedHat']"}
