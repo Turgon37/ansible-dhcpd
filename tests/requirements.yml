@@ -1,0 +1,5 @@
+---
+
+- name: yum-epel
+  src: https://github.com/Turgon37/ansible-yum-epel.git
+  version: origin/master
