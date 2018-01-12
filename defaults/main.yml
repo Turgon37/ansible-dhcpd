@@ -7,6 +7,9 @@ dhcpd__role: True
 # Enable facts deploiement
 dhcpd__facts: True
 
+# Choose the monitoring backend to configure (if available)
+#dhcpd__monitoring:
+
 # List of packages to install for adding cron feature to the host
 dhcpd__packages_names: []
 
@@ -36,7 +39,7 @@ dhcpd__interfaces: []
 dhcpd__authoritative: True
 
 # Enable or not the OMAPI interface
-dhcpd__omapi_enabled: False
+dhcpd__omapi_enabled: "{{ True if dhcpd__monitoring in ['zabbix'] else False }}"
 
 # Default port on which OMAPI will listen
 dhcpd__omapi_port: 7911
