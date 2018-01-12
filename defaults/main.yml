@@ -13,6 +13,9 @@ dhcpd__facts: True
 # List of packages to install for adding cron feature to the host
 dhcpd__packages_names: []
 
+# List of additionnals python dependencies
+dhcpd__pip_packages_names: []
+
 # Choose the mode that dhcpd will be set
 # available : ldap, files
 #dhcpd__mode: 

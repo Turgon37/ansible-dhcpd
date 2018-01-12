@@ -5,3 +5,9 @@
     name: '{{ item }}'
     state: present
   with_items: '{{ dhcpd__packages_names }}'
+
+- name: Install python pypureomapi
+  pip:
+    name: '{{ item }}'
+  with_items: '{{ dhcpd__pip_packages_names }}'
+  when: dhcpd__pip_packages_names|length > 0

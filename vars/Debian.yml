@@ -3,5 +3,7 @@
 
 dhcpd__packages_names:
   - isc-dhcp-server
+  - python-pypureomapi
+  - python-netaddr
 
 dhcpd__service_name: isc-dhcp-server
