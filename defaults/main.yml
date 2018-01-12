@@ -39,7 +39,7 @@ dhcpd__interfaces: []
 dhcpd__authoritative: True
 
 # Enable or not the OMAPI interface
-dhcpd__omapi_enabled: "{{ True if dhcpd__monitoring in ['zabbix'] else False }}"
+dhcpd__omapi_enabled: "{{ True if dhcpd__monitoring|d('undefined') in ['zabbix'] else False }}"
 
 # Default port on which OMAPI will listen
 dhcpd__omapi_port: 7911
