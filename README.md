@@ -12,7 +12,7 @@ Ansible Role DHCP Daemon
 Currently this role provide the following features :
 
   * dhcpd installation
-  * configuration dhcpd in plain text FILEs with 
+  * configuration dhcpd in plain text FILEs with
     * subnets
     * hosts
     * groups
