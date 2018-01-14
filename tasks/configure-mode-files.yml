@@ -39,13 +39,13 @@
   set_fact:
     dhcpd__keys: "{{ dhcpd__keys|combine({item.item.key: {'secret': item.stdout} }, recursive=True) }}"
   with_items: '{{ _dhcpd__existing_keys.results }}'
-  when: dhcpd__keys[item.item.key]['secret'] is not defined and item.rc == 0 and item.stdout|length > 0
+  when: dhcpd__keys[item.item.key]['secret'] is not defined and (item.rc == 0 and item.stdout|length > 0)
 
   # Generate new random keys
 - name: Generate random secret for missing keys
   shell: "dd if=/dev/urandom 'bs={{ dhcpd__keys_size_mapping[dhcpd__keys[item.item.key]['algorithm']] }}' count=1 2>/dev/null | base64"
   with_items: '{{ _dhcpd__existing_keys.results }}'
-  when: dhcpd__keys[item.item.key]['secret'] is not defined and item.rc != 0 or item.stdout|length == 0
+  when: dhcpd__keys[item.item.key]['secret'] is not defined and (item.rc != 0 or item.stdout|length == 0)
   register: _dhcpd__random_keys
   check_mode: False
 
@@ -53,7 +53,7 @@
   set_fact:
     dhcpd__keys: "{{ dhcpd__keys|combine({item.item.item.key:{'secret': item.stdout }}, recursive=True) }}"
   with_items: '{{ _dhcpd__random_keys.results }}'
-  when: dhcpd__keys[item.item.item.key]['secret'] is not defined and item.rc == 0 and item.stdout|length > 0
+  when: dhcpd__keys[item.item.item.key]['secret'] is not defined and (item.rc == 0 and item.stdout|length > 0)
 
 - name: Install secret keys
   template:
