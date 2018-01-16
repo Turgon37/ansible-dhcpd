@@ -24,10 +24,6 @@
 - import_tasks: service.yml
   tags: ['dhcpd', 'dhcpd-service']
 
-- include_tasks: 'monitoring-{{ dhcpd__monitoring }}.yml'
-  when: dhcpd__monitoring is defined
-  tags: ['dhcpd', 'dhcpd-monitoring']
-
 - include_tasks: facts.yml
   when: dhcpd__facts|bool
   tags: ['dhcpd', 'dhcpd-facts']
