@@ -1,6 +1,8 @@
 Ansible Role DHCP Daemon
 =========
 
+[![Build Status](https://travis-ci.org/Turgon37/ansible-dhcpd.svg?branch=master)](https://travis-ci.org/Turgon37/ansible-dhcpd)
+
 :warning: This role is under development, some important (and possibly breaking) changes may happend. Don't use it in production level environments but you can eventually base your own role on this one :hammer:
 
 :grey_exclamation: Before using this role, please know that all my Ansible roles are fully written and accustomed to my IT infrastructure. So, even if they are as generic as possible they will not necessarily fill your needs, I advice you to carrefully analyse what they do and evaluate their capability to be installed securely on your servers.
@@ -12,7 +14,7 @@ Ansible Role DHCP Daemon
 Currently this role provide the following features :
 
   * dhcpd installation
-  * configuration dhcpd in plain text FILEs with
+  * dhcpd configuration in plain text FILEs with
     * subnets
     * hosts
     * groups
@@ -20,7 +22,7 @@ Currently this role provide the following features :
     * options declarations
     * OMAPI configuration
     * secret keys (with automatic secret generation available)
-  * configuration dhcpd in mode LDAP
+  * dhcpd configuration in mode LDAP
   * [local facts](#facts)
 
 ## Requirements
