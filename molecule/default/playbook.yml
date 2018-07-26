@@ -4,3 +4,33 @@
   any_errors_fatal: true
   roles:
     - role: ansible-dhcpd
+  vars:
+#   dhcpd__service_enabled: false
+#   dhcpd__omapi_enabled: true
+    dhcpd__parameters:
+      - adaptive-lease-time-threshold 75
+      - get-lease-hostnames off
+      - update-optimization on
+      - default-lease-time 43200
+      - max-lease-time 86400
+      - min-lease-time 600
+      - deny bootp
+      - ignore client-updates
+      - update-static-leases on
+      - ddns-updates off
+      - ddns-update-style none
+      - ping-check true
+      - ping-timeout 1
+      - log-facility local7
+    dhcpd__mode: files
+    dhcpd__keys:
+      test:
+        algorithm: hmac-md5
+        secret: nHYJhq8cRGeKUl9ZlyJIMw==
+    dhcpd__subnets:
+      - network: 172.17.0.0
+        netmask: 255.255.0.0
+        range: 172.17.0.10 172.17.0.100
+        dhcp_options:
+          subnet-mask: 255.255.255.0
+          routers: 172.17.255.254
