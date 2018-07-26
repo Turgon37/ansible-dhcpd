@@ -3,10 +3,8 @@
 
 dhcpd__packages_names:
   - dhcp
-  - python-netaddr
-  - python-pip
+#  - python-netaddr
+#  - python-pip
 
 dhcpd__pip_packages_names:
   - pypureomapi
-
-dhcpd__service_name: dhcpd

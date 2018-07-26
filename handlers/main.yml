@@ -2,7 +2,12 @@
 # handlers file for dhcpd
 
 - name: restart-dhcpd
+  command: '{{ dhcpd__service_executable }} -t -T -cf {{ dhcpd__configuration_file }} -lf {{ dhcpd__leases_file }}'
+  notify: ['restart-dhcpd-after-config-ok']
+
+- name: restart-dhcpd-daemon
   service:
-    name:  '{{ dhcpd__service_name }}'
+    name: '{{ dhcpd__service_name }}'
     state: restarted
   when: dhcpd__service_enabled|bool
+  listen: restart-dhcpd-after-config-ok

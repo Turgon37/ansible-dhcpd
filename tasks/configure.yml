@@ -1,13 +1,23 @@
 ---
 
-- name: Install default configuration file
+- name: Ensure configuration directory exists
+  file:
+    path: '{{ item }}'
+    owner: root
+    group: root
+    mode: 0755
+    state: directory
+  with_items:
+    - '{{ dhcpd__configuration_directory }}'
+
+- name: Install service environment file
   template:
-    src:   default-dhcpd.j2
-    dest:  '/etc/default/isc-dhcp-server'
+    src: dhcpd.environment.j2
+    dest: '{{ dhcpd__service_environment }}'
     owner: root
     group: root
     mode:  0644
-  when: ansible_distribution == 'Debian'
+  when: dhcpd__service_environment is defined
   notify: [ 'restart-dhcpd' ]
 
 - name: Include the dhcpd mode's tasks

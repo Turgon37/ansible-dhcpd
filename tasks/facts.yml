@@ -2,14 +2,16 @@
 
 - name: Create custom fact directory
   file:
-    path:  "{{ facts__dir|d('/etc/ansible/facts.d') }}"
+    path: "{{ facts__dir|d('/etc/ansible/facts.d') }}"
     owner: root
     group: root
     mode:  0755
     state: directory
+  tags: ['dhcpd', 'dhcpd-facts']
 
 - name: Insert custom fact file
   copy:
-    src:  files/dhcpd.py
+    src: files/dhcpd.fact.py
     dest: "{{ facts__dir|d('/etc/ansible/facts.d') }}/dhcpd.fact"
     mode: 0755
+  tags: ['dhcpd', 'dhcpd-facts']
