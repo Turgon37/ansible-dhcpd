@@ -23,7 +23,7 @@
     group: root
     mode: 0755
     state: directory
-  notify: [ 'restart-dhcpd' ]
+  notify: ['restart-dhcpd']
 
 - name: Test keys for existing secret in file
   command: "grep --perl-regexp --only-matching '(?<=secret ).*[^;]' '{{ dhcpd__keys_dir }}/{{ item.key }}.key'"
@@ -64,7 +64,7 @@
     mode: 0640
     validate: '{{ dhcpd__service_executable }} -t -cf %s'
   with_dict: '{{ dhcpd__keys }}'
-  notify: [ 'restart-dhcpd' ]
+  notify: ['restart-dhcpd']
 
 - name: Configure DHCP server
   template:
@@ -74,4 +74,4 @@
     group: root
     mode: 0644
     validate: '{{ dhcpd__service_executable }} -t -cf %s'
-  notify: [ 'restart-dhcpd' ]
+  notify: ['restart-dhcpd']

@@ -1,4 +1,6 @@
+---
+
 - name: Check for DHCPD mode
   fail:
-    msg: "The dhcp mode is not configured"
+    msg: 'The dhcp mode is not configured'
   when: dhcpd__mode is not defined

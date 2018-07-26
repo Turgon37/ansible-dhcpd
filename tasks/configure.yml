@@ -16,9 +16,9 @@
     dest: '{{ dhcpd__service_environment }}'
     owner: root
     group: root
-    mode:  0644
+    mode: 0644
   when: dhcpd__service_environment is defined
-  notify: [ 'restart-dhcpd' ]
+  notify: ['restart-dhcpd']
 
 - name: Include the dhcpd mode's tasks
   include_tasks: 'configure-mode-{{ dhcpd__mode }}.yml'

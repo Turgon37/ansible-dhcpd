@@ -2,7 +2,7 @@
 # defaults file for dhcpd
 
 # Enable facts deploiement
-dhcpd__facts: True
+dhcpd__facts: true
 
 
 ### INSTALLATION CONFIGURATION
