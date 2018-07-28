@@ -13,6 +13,7 @@
 - name: Ensure old sysvinit is stop and disabled on boot
   service:
     name: '{{ dhcpd__service_sysvinit_name }}'
+  when: dhcpd__service_sysvinit_name is defined
   register: _dhcpd__service_sysvinit
   check_mode: false
 
@@ -21,7 +22,8 @@
     name: '{{ dhcpd__service_sysvinit_name }}'
     enabled: false
     state: stopped
-  when: _dhcpd__service_sysvinit.status.ActiveState == 'active'
+  when: dhcpd__service_sysvinit_name is defined and
+    _dhcpd__service_sysvinit.status.ActiveState == 'active'
 
 - name: Remove sysvinit unit file
   file:
