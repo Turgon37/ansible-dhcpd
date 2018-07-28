@@ -12,8 +12,8 @@ omapi-port {{ dhcpd__instance.omapi_port|int }};
 omapi-key {{ dhcpd__instance.omapi_key_name }};
 {% endif %}
 
-{% for name in dhcpd__instance.secret_keys.keys() %}
-include "{{ dhcpd__instance.keys_dir }}/{{ name }}.key";
+{% for name in _dhcpd__instance_keys.keys()|list %}
+include "{{ _dhcpd__instance_keys_directory }}/{{ name }}.key";
 {% endfor %}
 
 # Global service parameters

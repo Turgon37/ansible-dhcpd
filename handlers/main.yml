@@ -5,4 +5,4 @@
   service:
     name: "{{ dhcpd__service_name|replace('%i', item) }}"
     state: restarted
-  with_items: '{{ dhcpd__instances.keys() }}'
+  with_items: '{{ dhcpd__instances.keys()|list }}'

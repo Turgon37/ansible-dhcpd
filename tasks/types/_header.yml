@@ -7,9 +7,26 @@
       - dhcpd__instance.name is defined
       - dhcpd__instance.mode is defined
       - dhcpd__instance.listen_interfaces|length > 0
+      - dhcpd__instance.ip_version|int
     msg: >
       dhcpd__instance must be defined with specifications,
       dhcpd__instance.name must contains the name of the instance,
       dhcpd__instance.mode must be set and
       dhcpd__instance.listen_interfaces must not be empty
   tags: ['always']
+
+- name: Init some values
+  set_fact:
+    _dhcpd__instance_keys_directory: '{{ dhcpd__keys_directory }}/{{ dhcpd__instance.name }}'
+    _dhcpd__instance_keys: '{{ dhcpd__instance.secret_keys }}'
+    _dhcpd__instance_restart: false
+  tags: ['always']
+
+- name: Create instance keys directory
+  file:
+    path: '{{ _dhcpd__instance_keys_directory }}'
+    owner: root
+    group: root
+    mode: 0755
+    state: directory
+  tags: ['dhcpd', 'dhcpd-configure']

@@ -2,9 +2,8 @@
 # vars file for dhcpd (Debian specific)
 
 dhcpd__packages_names:
-  - isc-dhcp-server
-# - python-pypureomapi
-# - python-netaddr
+ - isc-dhcp-server
+ - python-pypureomapi
 
 # remove debian sysv init file
 dhcpd__service_sysvinit_file: /etc/init.d/isc-dhcp-server

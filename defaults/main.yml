@@ -50,7 +50,7 @@ dhcpd__leases_file: '{{ dhcpd__var_directory }}/dhcpd.%i.leases'
 dhcpd__configuration_file: '{{ dhcpd__configuration_directory }}/dhcpd.%i.conf'
 
 # The configuration file of dhcp server
-# dhcpd__keys_directory: '{{ dhcpd__configuration_directory }}/keys'
+dhcpd__keys_directory: '{{ dhcpd__configuration_directory }}/keys'
 
 
 ### DHCP CONFIGURATION
@@ -114,7 +114,11 @@ dhcpd__instance_defaults:
 
   # Default port on which OMAPI will listen
   omapi_port: 7911
-  omapi_key_name: internal_omapi_key_%i
+
+  # the name of the key resource
+  omapi_key_name: internal_omapi_key
+
+  # the algorythm to use to generate omapi key
   omapi_key_algorithm: hmac-md5
 
   # List of secret keys defined

@@ -9,3 +9,4 @@
     state: directory
   with_items:
     - '{{ dhcpd__configuration_directory }}'
+    - '{{ dhcpd__keys_directory }}'

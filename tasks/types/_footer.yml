@@ -29,7 +29,7 @@
     owner: root
     group: root
     mode: 0644
-    validate: '{{ dhcpd__service_executable }} -{{ dhcpd__instance.ip_version }} -t -cf %s'
+    validate: '{{ dhcpd__service_executable }} -{{ dhcpd__instance.ip_version|int }} -t -cf %s'
   when: dhcpd__instance.state|d('present') == 'present'
   register: _dhcpd__instance_config
   tags: ['dhcpd', 'dhcpd-configure']
@@ -41,22 +41,27 @@
   when: dhcpd__instance.state|d('present') != 'present'
   tags: ['dhcpd', 'dhcpd-configure']
 
+# leases database
+
+- name: Test instance leases file
+  stat:
+    path: "{{ dhcpd__leases_file|replace('%i', dhcpd__instance.name) }}"
+  register: _dhcpd__instance_leases_file_stat
+  tags: ['dhcpd', 'dhcpd-configure']
+
 - name: Ensure instance leases file exists
   file:
     path: "{{ dhcpd__leases_file|replace('%i', dhcpd__instance.name) }}"
     state: touch
-  when: dhcpd__instance.state|d('present') == 'present'
+  when: not _dhcpd__instance_leases_file_stat.stat.exists and dhcpd__instance.state|d('present') == 'present'
   tags: ['dhcpd', 'dhcpd-configure']
 
 - name: Compute instance service status
   set_fact:
     _dhcpd__instance_service_status: "{{
-      'restarted' if _dhcpd__instance_config is changed else
+      'restarted' if _dhcpd__instance_config is changed or _dhcpd__instance_restart|bool else
       'started' }}"
   tags: ['dhcpd', 'dhcpd-configure']
-
-- debug:
-    msg: "{{ (dhcpd__service_enabled|bool if dhcpd__instance.state|d('present') == 'present' else false)|ternary(_dhcpd__instance_service_status|d('started'), 'stopped') }}"
 
 - name: Ensure dhcpd is started and enabled on boot
   service:
