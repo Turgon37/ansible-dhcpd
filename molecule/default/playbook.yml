@@ -9,6 +9,7 @@
     # dhcpd__omapi_enabled: true
     dhcpd__instances:
       4:
+        listen_interfaces: "{{ (ansible_interfaces|difference(['lo'])|sort|list)[0] }}"
         parameters:
           - adaptive-lease-time-threshold 75
           - get-lease-hostnames off
