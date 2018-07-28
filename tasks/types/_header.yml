@@ -1,0 +1,15 @@
+---
+
+- name: Check instance prerequisites
+  assert:
+    that:
+      - dhcpd__instance is defined
+      - dhcpd__instance.name is defined
+      - dhcpd__instance.mode is defined
+      - dhcpd__instance.listen_interfaces|length > 0
+    msg: >
+      dhcpd__instance must be defined with specifications,
+      dhcpd__instance.name must contains the name of the instance,
+      dhcpd__instance.mode must be set and
+      dhcpd__instance.listen_interfaces must not be empty
+  tags: ['always']

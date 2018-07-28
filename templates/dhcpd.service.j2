@@ -1,0 +1,18 @@
+[Unit]
+Description=DHCP Server Daemon
+Documentation=man:dhcpd(8) man:dhcpd.conf(5)
+Wants=network-online.target
+Wants=slapd.service
+Wants=bind9.service
+After=remote-fs.target
+After=network-online.target
+After=time-sync.target
+
+[Service]
+Type=forking
+EnvironmentFile={{ dhcpd__service_environment }}
+PIDFile={{ dhcpd__service_pidfile }}
+ExecStart={{ dhcpd__service_executable }} -cf {{ dhcpd__configuration_file }} -lf {{ dhcpd__leases_file }} -pf {{ dhcpd__service_pidfile }} $INTERFACES
+
+[Install]
+WantedBy=multi-user.target

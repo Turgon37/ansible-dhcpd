@@ -12,6 +12,11 @@
       skip: true
   tags: ['always']
 
+- name: Check role availability
+  fail:
+    msg: This module only works with systemd
+  when: ansible_service_mgr != 'systemd'
+
 - name: Import init tasks
   import_tasks: init.yml
   tags: ['always']
@@ -27,6 +32,15 @@
 - name: Import service tasks
   import_tasks: service.yml
   tags: ['dhcpd', 'dhcpd-service']
+
+- name: Configure dhcpd instances
+  include_tasks: types/instance_{{ outer_item.value.mode }}.yml
+  vars:
+    dhcpd__instance: "{{ dhcpd__instance_defaults|combine(outer_item.value)|combine({'name': outer_item.key}) }}"
+  with_dict: '{{ dhcpd__instances }}'
+  loop_control:
+    loop_var: outer_item
+  tags: ['dhcpd', 'dhcpd-configure']
 
 - name: Optionally include facts tasks
   include_tasks: facts.yml

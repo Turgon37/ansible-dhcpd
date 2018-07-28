@@ -1,0 +1,66 @@
+---
+
+# service environment
+
+- name: Install dhcpd instance service environment file
+  template:
+    src: dhcpd.environment.j2
+    dest: "{{ dhcpd__service_environment|replace('%i', dhcpd__instance.name) }}"
+    owner: root
+    group: root
+    mode: 0644
+  when: dhcpd__instance.state|d('present') == 'present'
+  register: _dhcpd__instance_config
+  tags: ['dhcpd', 'dhcpd-configure']
+
+- name: Remove dhcpd instance service environment file
+  file:
+    path: "{{ dhcpd__service_environment|replace('%i', dhcpd__instance.name) }}"
+    state: absent
+  when: dhcpd__instance.state|d('present') != 'present'
+  tags: ['dhcpd', 'dhcpd-configure']
+
+# service configuration
+
+- name: Install dhcpd instance configuration file
+  template:
+    src: 'dhcpd.conf.{{ dhcpd__instance.mode }}.j2'
+    dest: "{{ dhcpd__configuration_file|replace('%i', dhcpd__instance.name) }}"
+    owner: root
+    group: root
+    mode: 0644
+    validate: '{{ dhcpd__service_executable }} -{{ dhcpd__instance.ip_version }} -t -cf %s'
+  when: dhcpd__instance.state|d('present') == 'present'
+  register: _dhcpd__instance_config
+  tags: ['dhcpd', 'dhcpd-configure']
+
+- name: Remove dhcpd instance configuration file
+  file:
+    path: "{{ dhcpd__configuration_file|replace('%i', dhcpd__instance.name) }}"
+    state: absent
+  when: dhcpd__instance.state|d('present') != 'present'
+  tags: ['dhcpd', 'dhcpd-configure']
+
+- name: Ensure instance leases file exists
+  file:
+    path: "{{ dhcpd__leases_file|replace('%i', dhcpd__instance.name) }}"
+    state: touch
+  when: dhcpd__instance.state|d('present') == 'present'
+  tags: ['dhcpd', 'dhcpd-configure']
+
+- name: Compute instance service status
+  set_fact:
+    _dhcpd__instance_service_status: "{{
+      'restarted' if _dhcpd__instance_config is changed else
+      'started' }}"
+  tags: ['dhcpd', 'dhcpd-configure']
+
+- debug:
+    msg: "{{ (dhcpd__service_enabled|bool if dhcpd__instance.state|d('present') == 'present' else false)|ternary(_dhcpd__instance_service_status|d('started'), 'stopped') }}"
+
+- name: Ensure dhcpd is started and enabled on boot
+  service:
+    name: "{{ dhcpd__service_name|replace('%i', dhcpd__instance.name) }}"
+    enabled: "{{ dhcpd__service_enabled|bool if dhcpd__instance.state|d('present') == 'present' else false }}"
+    state: "{{ (dhcpd__service_enabled|bool if dhcpd__instance.state|d('present') == 'present' else false)|ternary(_dhcpd__instance_service_status|d('started'), 'stopped') }}"
+  tags: ['dhcpd', 'dhcpd-configure', 'dhcpd-service']

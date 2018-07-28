@@ -1,0 +1,20 @@
+---
+
+- name: Include common instance ending tasks
+  include_tasks: types/_header.yml
+  tags: ['dhcpd', 'dhcpd-configure']
+
+- name: Assert required LDAP variables
+  assert:
+    that:
+      - dhcpd__instance.ip_version in [4, 6]
+      - dhcpd__instance.ldap_server is defined
+      - dhcpd__instance.ldap_basedn is defined
+      - dhcpd__instance.ldap_method in ['static', 'dynamic']
+      - dhcpd__instance.ldap_ssl is not defined or dhcpd__ldap_ssl in ['start_tls', 'ldaps']
+  when: dhcpd__instance.mode == 'ldap'
+  tags: ['always']
+
+- name: Include common instance ending tasks
+  include_tasks: types/_footer.yml
+  tags: ['dhcpd', 'dhcpd-configure']
