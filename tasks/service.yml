@@ -10,7 +10,7 @@
   register: _dhcpd__service
   notify: ['restart-dhcpd']
 
-- name: Ensure old sysvinit is stop and disabled on boot
+- name: Test if old sysvinit is running
   service:
     name: '{{ dhcpd__service_sysvinit_name }}'
   when: dhcpd__service_sysvinit_name is defined

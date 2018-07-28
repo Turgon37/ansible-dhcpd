@@ -2,7 +2,26 @@
 # handlers file for dhcpd
 
 - name: restart-dhcpd
+  stat:
+    path: "{{ dhcpd__configuration_file|replace('%i', item.key) }}"
+  with_dict: '{{ dhcpd__instances }}'
+  register: _dhcpd__handler_restart_config_stats
+  changed_when: true
+  notify: ['restart-dhcpd-after-config-installed']
+
+- name: restart-dhcpd-config
+  command: "{{ dhcpd__service_executable }} -{{ item.item.value.ip_version|d(dhcpd__instance_defaults.ip_version)|int }} -t -cf {{ dhcpd__configuration_file|replace('%i', item.item.key) }}"
+  with_items: '{{ _dhcpd__handler_restart_config_stats.results|list }}'
+  when: item.stat.exists
+  check_mode: false
+  register: _dhcpd__handler_restart_config_test
+  listen: restart-dhcpd-after-config-installed
+  notify: ['restart-dhcpd-after-config-ok']
+
+- name: restart-dhcpd-daemon
   service:
-    name: "{{ dhcpd__service_name|replace('%i', item) }}"
+    name: "{{ dhcpd__service_name|replace('%i', item.item.item.key) }}"
     state: restarted
-  with_items: '{{ dhcpd__instances.keys()|list }}'
+  with_items: '{{ _dhcpd__handler_restart_config_test.results|list }}'
+  when: dhcpd__service_enabled|bool and item is not skipped
+  listen: restart-dhcpd-after-config-ok
