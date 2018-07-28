@@ -9,10 +9,6 @@
   assert:
     that:
       - true
-  
-#- name: Init some value
-#  set_fact:
-#    
 
 - name: Include common instance ending tasks
   include_tasks: types/_footer.yml

@@ -50,7 +50,7 @@ dhcpd__leases_file: '{{ dhcpd__var_directory }}/dhcpd.%i.leases'
 dhcpd__configuration_file: '{{ dhcpd__configuration_directory }}/dhcpd.%i.conf'
 
 # The configuration file of dhcp server
-#dhcpd__keys_directory: '{{ dhcpd__configuration_directory }}/keys'
+# dhcpd__keys_directory: '{{ dhcpd__configuration_directory }}/keys'
 
 
 ### DHCP CONFIGURATION

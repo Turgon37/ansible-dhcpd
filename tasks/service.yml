@@ -8,7 +8,7 @@
     group: root
     mode: 0755
   register: _dhcpd__service
-  notify: [ 'restart-dhcpd' ]
+  notify: ['restart-dhcpd']
 
 - name: Ensure old sysvinit is stop and disabled on boot
   service:

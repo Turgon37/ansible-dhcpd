@@ -5,8 +5,8 @@
   roles:
     - role: ansible-dhcpd
   vars:
-#   dhcpd__service_enabled: false
-#   dhcpd__omapi_enabled: true
+    # dhcpd__service_enabled: false
+    # dhcpd__omapi_enabled: true
     dhcpd__parameters:
       - adaptive-lease-time-threshold 75
       - get-lease-hostnames off
