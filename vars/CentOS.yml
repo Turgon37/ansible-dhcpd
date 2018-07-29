@@ -6,5 +6,9 @@ dhcpd__packages_names:
 #  - python-netaddr
 #  - python-pip
 
-dhcpd__pip_packages_names:
-  - pypureomapi
+# dhcpd__pip_packages_names:
+#   - pypureomapi
+
+dhcpd__service_environment: /etc/sysconfig/dhcpd.%i
+
+dhcpd__var_directory: /var/lib/dhcpd

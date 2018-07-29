@@ -1,7 +1,41 @@
 ---
 
-- name: Ensure dhcpd is started and enabled on boot
+- name: Install dhcpd.service systemd unit file
+  template:
+    src: dhcpd.service.j2
+    dest: "/etc/systemd/system/{{ dhcpd__service_name|replace('%i', '') }}.service"
+    owner: root
+    group: root
+    mode: 0755
+  register: _dhcpd__service
+  notify: ['restart-dhcpd']
+
+- name: Test if old sysvinit is running
   service:
-    name:    '{{ dhcpd__service_name }}'
-    enabled: '{{ dhcpd__service_enabled|bool }}'
-    state:   "{{ dhcpd__service_enabled|bool|ternary('started', 'stopped') }}"
+    name: '{{ dhcpd__service_sysvinit_name }}'
+  when: dhcpd__service_sysvinit_name is defined
+  register: _dhcpd__service_sysvinit
+  check_mode: false
+
+- name: Ensure old sysvinit is stop and disabled on boot
+  service:
+    name: '{{ dhcpd__service_sysvinit_name }}'
+    enabled: false
+    state: stopped
+  when: dhcpd__service_sysvinit_name is defined and
+    _dhcpd__service_sysvinit.status.ActiveState == 'active'
+
+- name: Remove sysvinit unit file
+  file:
+    path: '{{ dhcpd__service_sysvinit_file }}'
+    state: absent
+  register: _dhcpd__service_sysvinit
+  when: dhcpd__service_sysvinit_file is defined
+
+- name: Reload systemd
+  systemd:
+    daemon_reload: true
+  when: _dhcpd__service is changed or _dhcpd__service_sysvinit is changed
+  changed_when: true
+
+- meta: flush_handlers

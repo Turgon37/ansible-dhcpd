@@ -5,7 +5,7 @@
     path: "{{ facts__dir|d('/etc/ansible/facts.d') }}"
     owner: root
     group: root
-    mode:  0755
+    mode: 0755
     state: directory
   tags: ['dhcpd', 'dhcpd-facts']
 

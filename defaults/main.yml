@@ -2,7 +2,7 @@
 # defaults file for dhcpd
 
 # Enable facts deploiement
-dhcpd__facts: True
+dhcpd__facts: true
 
 
 ### INSTALLATION CONFIGURATION
@@ -17,103 +17,124 @@ dhcpd__pip_packages_names: []
 ### SERVICE CONFIGURATION
 # ---------------------------------------
 # The name of the dhcp service
-dhcpd__service_name: dhcpd
+dhcpd__service_name: 'dhcpd@%i'
 
 # Determine if the service will be enabled
-dhcpd__service_enabled: false
+dhcpd__service_enabled: true
 
 # optionnal path to the environment file
 # dhcpd__service_environment:
 
+# optional path to old sysv init script to remove
+# dhcpd__service_sysvinit_file:
+
+# optional name of old sysv init service to stop and disable
+# dhcpd__service_sysvinit_name:
+
 # Path to dhcpd binary
 dhcpd__service_executable: /usr/sbin/dhcpd
 
-dhcpd__pid_file: /var/run/dhcpd.pid
+# Path to pid file per instances
+dhcpd__service_pidfile: '/var/run/dhcpd.%i.pid'
 
 # The main configuration directory of dhcpd
 dhcpd__configuration_directory: /etc/dhcp
 
-# The configuration file of dhcp server
-dhcpd__configuration_file: '{{ dhcpd__configuration_directory }}/dhcpd.conf'
-
 # Directory in which dhcpd will store it's variable datas
 dhcpd__var_directory: /var/lib/dhcp
 
-# The configuration file of dhcp server
-dhcpd__keys_directory: '{{ dhcpd__config_dir }}/keys'
+# Path to the lease file per instances
+dhcpd__leases_file: '{{ dhcpd__var_directory }}/dhcpd.%i.leases'
 
-# Path to the lease file
-dhcpd__leases_file: '{{ dhcpd__var_directory }}/dhcpd.leases'
+# The configuration file of dhcp server
+dhcpd__configuration_file: '{{ dhcpd__configuration_directory }}/dhcpd.%i.conf'
+
+# The configuration file of dhcp server
+dhcpd__keys_directory: '{{ dhcpd__configuration_directory }}/keys'
 
 
 ### DHCP CONFIGURATION
 # ---------------------------------------
+# Dict of dhcpd instances
+dhcpd__instances: {}
 
-# Choose the mode that dhcpd will be set
-# available : ldap, files
-# dhcpd__mode:
+# Define default values for all instances
+dhcpd__instance_defaults:
+  # Choose the mode that dhcpd will be set
+  # available : ldap, files
+  # mode:
 
-# The list of interface to listen on
-dhcpd__listen_interfaces: []
+  # The list of interface to listen on
+  listen_interfaces: []
+
+  # Choose which IP version to use
+  ip_version: 4
+
+  # Optional options to pass to dhcpd runtime
+  daemon_options:
+
+  ##############
+  ## LDAP mode
+  ##############
+
+  # The address of the LDAP server
+  ldap_server: server.example.com
+  # The port on which to contact LDAP server
+  ldap_port: 389
+  # Set ssl mode 'start_tls' or 'ldaps'
+  # ldap_ssl: start_tls
+  # ldap_tls_crlcheck:
+
+  # LDAP Bind auth
+  # ldap_username:
+  # ldap_password:
+
+  # The base DN to use to search LDAP objects
+  ldap_basedn: dc=example,dc=com
+  # Set here manually the server hostname to find the server's entry in LDAP
+  # dhcpd__ldap_servercn: "server";
+
+  # The method to use to retrieve DHCPD configuration from LDAP
+  # Choice in : static, dynamic
+  ldap_method: static
+  # The path to the debug file
+  # ldap_debug_file:
 
 
-##############
-# FILES mode #
-##############
+  ##############
+  # FILES mode #
+  ##############
 
-# Make this serveur authoritative
-dhcpd__authoritative: true
+  # Make this serveur authoritative
+  # This DHCP server is the official DHCP server for the local network
+  authoritative: true
 
-# Enable or not the OMAPI interface
-dhcpd__omapi_enabled: false
+  # Enable or not the OMAPI interface
+  omapi_enabled: false
 
-# Default port on which OMAPI will listen
-dhcpd__omapi_port: 7911
-dhcpd__omapi_key_name: internal_omapi_key
-dhcpd__omapi_key_algorithm: hmac-md5
+  # Default port on which OMAPI will listen
+  omapi_port: 7911
 
-# List of secret keys defined
-dhcpd__keys: {}
+  # the name of the key resource
+  omapi_key_name: internal_omapi_key
 
-# Global parameters
-dhcpd__parameters: []
+  # the algorythm to use to generate omapi key
+  omapi_key_algorithm: hmac-md5
 
-# Global DHCP option that applies on all subnet
-dhcpd__dhcp_options: {}
+  # List of secret keys defined
+  secret_keys: {}
 
-# List of subnets definitions
-dhcpd__subnets: []
+  # Global parameters
+  parameters: []
 
-# List of globally defined hosts
-dhcpd__hosts: []
+  # Global DHCP option that applies on all subnet
+  dhcp_options: {}
 
+  # List of subnets definitions
+  subnets: []
 
-##############
-## LDAP mode
-##############
-
-# The address of the LDAP server
-dhcpd__ldap_server: server.example.com
-# The port on which to contact LDAP server
-dhcpd__ldap_port: 389
-# Set ssl mode 'start_tls' or 'ldaps'
-# dhcpd__ldap_ssl: start_tls
-# dhcpd__ldap_tls_crlcheck:
-
-# LDAP Bind auth
-# dhcpd__ldap_username:
-# dhcpd__ldap_password:
-
-# The base DN to use to search LDAP objects
-dhcpd__ldap_basedn: dc=example,dc=com
-# Set here manually the server hostname to find the server's entry in LDAP
-# dhcpd__ldap_servercn: "server";
-
-# The method to use to retrieve DHCPD configuration from LDAP
-# Choice in : static, dynamic
-dhcpd__ldap_method: static
-# The path to the debug file
-# dhcpd__ldap_debug_file:
+  # List of globally defined hosts
+  hosts: []
 
 
 #######################

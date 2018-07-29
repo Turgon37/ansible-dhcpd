@@ -1,47 +1,39 @@
 {%- import '_statements.j2' as statements with context -%}
-#
-# {{ ansible_managed }}
-#
+{{ ansible_managed|comment(decoration='# ') }}
 
-#
-# DHCP Server Configuration file.
-#
-
-{% if dhcpd__authoritative|d(false)|bool %}
-# This DHCP server is the official DHCP server for the local network
+{% if dhcpd__instance.authoritative|d(false)|bool %}
 authoritative;
 {% else %}
 not authoritative;
 {% endif %}
 
-{% if dhcpd__omapi_enabled|bool %}
-omapi-port {{ dhcpd__omapi_port|int }};
-omapi-key {{ dhcpd__omapi_key_name }};
+{% if dhcpd__instance.omapi_enabled|bool %}
+omapi-port {{ dhcpd__instance.omapi_port|int }};
+omapi-key {{ dhcpd__instance.omapi_key_name }};
 {% endif %}
 
-{% for name in dhcpd__keys.keys() %}
-include "{{ dhcpd__keys_dir }}/{{ name }}.key";
+{% for name in _dhcpd__instance_keys.keys()|list %}
+include "{{ _dhcpd__instance_keys_directory }}/{{ name }}.key";
 {% endfor %}
 
 # Global service parameters
-{% for value in dhcpd__parameters %}
+{% for value in dhcpd__instance.parameters %}
 {{   statements.parameter(value) }}
 {% endfor %}
 
 # Global DHCP options definitions for all supported networks
-{% for key, value in dhcpd__dhcp_options|dictsort %}
+{% for key, value in dhcpd__instance.dhcp_options|dictsort %}
 {{   statements.option(key, value) }}
 {% endfor %}
 
 # Subnets
 #
-{% for subnet in dhcpd__subnets %}
+{% for subnet in dhcpd__instance.subnets %}
 {{   statements.subnet(subnet) }}
 {% endfor %}
 
-
 # Hosts
 #
-{% for host in dhcpd__hosts %}
+{% for host in dhcpd__instance.hosts %}
 {{   statements.host(host) }}
 {% endfor %}

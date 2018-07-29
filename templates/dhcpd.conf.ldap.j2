@@ -1,29 +1,23 @@
-#
-# {{ ansible_managed }}
-#
+{{ ansible_managed|comment(decoration='# ') }}
 
-#
-# DHCP Server Configuration file.
-#
-
-ldap-server "{{ dhcpd__ldap_server }}";
-ldap-port {{ dhcpd__ldap_port | d("389") | int }};
-{% if dhcpd__ldap_ssl is defined %}
-ldap-ssl {{ dhcpd__ldap_ssl }};
+ldap-server "{{ dhcpd__instance.ldap_server }}";
+ldap-port {{ dhcpd__instance.ldap_port | d("389") | int }};
+{% if dhcpd__instance.ldap_ssl is defined %}
+ldap-ssl {{ dhcpd__instance.ldap_ssl }};
 {% endif %}
-{% if dhcpd__ldap_tls_crlcheck is defined %}
-ldap-tls-crlcheck {{ dhcpd__ldap_tls_crlcheck }};
+{% if dhcpd__instance.ldap_tls_crlcheck is defined %}
+ldap-tls-crlcheck {{ dhcpd__instance.ldap_tls_crlcheck }};
 {% endif %}
-{% if dhcpd__ldap_username is defined and dhcpd__ldap_password is defined %}
+{% if dhcpd__instance.ldap_username is defined and dhcpd__instance.ldap_password is defined %}
 # Auth
-ldap-username "{{ dhcpd__ldap_username }}";
-ldap-password "{{ dhcpd__ldap_password }}";
+ldap-username "{{ dhcpd__instance.ldap_username }}";
+ldap-password "{{ dhcpd__instance.ldap_password }}";
 {% endif %}
-ldap-base-dn "{{ dhcpd__ldap_basedn }}";
-{% if dhcpd__ldap_servercn is defined %}
-ldap-dhcp-server-cn "{{ dhcpd__ldap_servercn }}";
+ldap-base-dn "{{ dhcpd__instance.ldap_basedn }}";
+{% if dhcpd__instance.ldap_servercn is defined %}
+ldap-dhcp-server-cn "{{ dhcpd__instance.ldap_servercn }}";
 {% endif %}
-ldap-method static;
-{% if dhcpd__ldap_debug_file is defined %}
-ldap-debug-file "{{ dhcpd__ldap_debug_file }}";
+ldap-method {{ dhcpd__instance.ldap_method }};
+{% if dhcpd__instance.ldap_debug_file is defined %}
+ldap-debug-file "{{ dhcpd__instance.ldap_debug_file }}";
 {% endif %}

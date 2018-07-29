@@ -1,4 +1,16 @@
-- name: Check for DHCPD mode
-  fail:
-    msg: "The dhcp mode is not configured"
-  when: dhcpd__mode is not defined
+---
+
+- name: Assert global required variables
+  assert:
+    that:
+      - dhcpd__service_environment is defined
+
+- name: Assert required variables per instances
+  assert:
+    that:
+      - dhcpd__instance.mode is defined
+  vars:
+    dhcpd__instance: "{{ dhcpd__instance_defaults|combine(outer_item.value)|combine({'name': outer_item.key}) }}"
+  with_dict: '{{ dhcpd__instances }}'
+  loop_control:
+    loop_var: outer_item
