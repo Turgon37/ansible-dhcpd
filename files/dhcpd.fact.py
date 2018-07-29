@@ -24,7 +24,7 @@ try:
 except subprocess.CalledProcessError as e:
     content['error'] = str(e)
 
-if content:
+if not content:
     content = None
 
 print(json.dumps(content))
